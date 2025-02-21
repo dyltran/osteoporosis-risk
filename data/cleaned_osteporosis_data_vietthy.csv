@@ -1,4 +1,4 @@
-age,gender,hormonal_changes,family_history,race_Ethnicity,body_Weight,calcium_Intake,vitamin_D_Intake,physical_Activity,smoking,alcohol_Consumption,medical_Conditions,medications,prior_Fractures,osteoporosis
+age,gender,hormonal_Changes,family_History,race_Ethnicity,body_Weight,calcium_Intake,vitamin_D_Intake,physical_Activity,smoking,alcohol_Consumption,medical_Conditions,medications,prior_Fractures,osteoporosis
 1.400417700346115,0,0,1,1,1,1,1,1,1,0,2,0,1,1
 -0.3326057822693517,0,0,1,1,1,1,1,1,0,1,1,1,1,1
 2.3371871504085293,0,1,0,2,0,0,1,0,0,0,0,0,0,1
