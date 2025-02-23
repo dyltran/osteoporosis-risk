@@ -118,3 +118,28 @@ if st.button("Predict Osteoporosis Risk using Support Vector Machine Model"):
     prediction = model.predict(user_df)
     risk = "positive" if prediction == 1 else "negative"
     st.write(f"### We predict {risk} risk of osteoporosis.")
+
+# Creating DataFrame for support decision tree model input
+user_df = pd.DataFrame({
+    'age': [age],
+    'gender': [gender_encoded],
+    'hormonal_changes': [hormonal_changes_encoded],
+    'family_history': [family_history_encoded],
+    'race_ethnicity': [race_encoded],
+    'body_weight': [body_weight_encoded],
+    'calcium_intake': [calcium_intake_encoded],
+    'vitamin_d_intake': [vitamin_d_intake_encoded],
+    'physical_activity': [physical_activity_encoded],
+    'smoking': [smoking_encoded],
+    'alcohol_consumption': [alcohol_consumption_encoded],
+    'medical_conditions': [medical_condition_encoded],
+    'medications': [medications_encoded],
+    'prior_fractures': [prior_fracture_encoded],  # Ensure this matches what was used during training
+})
+
+model = joblib.load(open("decision_tree_model.pkl", "rb"))
+
+if st.button("Predict Osteoporosis Risk using Decision Tree Model"):
+    prediction = model.predict(user_df)
+    risk = "positive" if prediction == 1 else "negative"
+    st.write(f"### We predict {risk} risk of osteoporosis.")
