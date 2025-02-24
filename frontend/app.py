@@ -2,16 +2,29 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+from sklearn.preprocessing import StandardScaler
 
 st.title("Welcome to our Osteoporosis Risk Predictor")
 #FOR SUPPORT VECTOR CLASSIFIER: factors that have a postive feature importance: age, prior factures, gender, hormonal changes, body weight, race ethnicity, alcohol consumption, physical activity, vitamin D intake, calcium intake
 
+# Name Input
 name = st.text_input("Enter your name!")
 if name:
     st.write(f"Hello, {name}. Please provide the information below.")
+
+# Age Input
 age = st.slider("Choose your age.", 0, 150, 1)
 if age:
     st.write(f"You are {age} years old.")
+
+logistic_regression_scaler = joblib.load('scalers/logistic_regression_scaler.pkl')
+logistic_regression_age_scaled = logistic_regression_scaler.transform([[age]])
+
+support_vector_machine_scaler = joblib.load('scalers/support_vector_machine_scaler.pkl')
+support_vector_machine_age_scaled = support_vector_machine_scaler.transform([[age]])
+
+decision_tree_scaler = joblib.load('scalers/decision_tree_scaler.pkl')
+decision_tree_age_scaled = decision_tree_scaler.transform([[age]])
 
 # Gender Input
 gender = st.selectbox("What is your gender?", ["Female", "Male"])
@@ -69,8 +82,7 @@ prior_fracture_encoded = 1 if prior_fracture == "Yes" else 0
 
 # Creating DataFrame for logistic regression model input
 user_df = pd.DataFrame({
-    'id': [0],
-    'age': [age],
+    'age': [logistic_regression_age_scaled],
     'gender': [gender_encoded],
     'hormonal_changes': [hormonal_changes_encoded],
     'family_history': [family_history_encoded],
@@ -87,16 +99,18 @@ user_df = pd.DataFrame({
 })
 
 # Load Model
-model = joblib.load(open("logistic_regression_model.pkl", "rb"))
+model = joblib.load(open("models/logistic_regression_model.pkl", "rb"))
 
 if st.button("Predict Osteoporosis Risk using Logistic Regression Model"):
+    proba = model.predict_proba(user_df)
+    st.write(f"### Osteoporosis Risk Probability: {proba[0][1]:.2f}")
     prediction = model.predict(user_df)
     risk = "positive" if prediction == 1 else "negative"
     st.write(f"### We predict {risk} risk of osteoporosis.")
 
 # Creating DataFrame for support vector machine model input
 user_df = pd.DataFrame({
-    'age': [age],
+    'age': [support_vector_machine_age_scaled],
     'gender': [gender_encoded],
     'hormonal_Changes': [hormonal_changes_encoded],
     'family_History': [family_history_encoded],
@@ -109,10 +123,10 @@ user_df = pd.DataFrame({
     'alcohol_Consumption': [alcohol_consumption_encoded],
     'medical_Conditions': [medical_condition_encoded],
     'medications': [medications_encoded],
-    'prior_Fractures': [prior_fracture_encoded],  # Ensure this matches what was used during training
+    'prior_Fractures': [prior_fracture_encoded],
 })
 
-model = joblib.load(open("support_vector_machine_model.pkl", "rb"))
+model = joblib.load(open("models/support_vector_machine_model.pkl", "rb"))
 
 if st.button("Predict Osteoporosis Risk using Support Vector Machine Model"):
     prediction = model.predict(user_df)
@@ -121,7 +135,7 @@ if st.button("Predict Osteoporosis Risk using Support Vector Machine Model"):
 
 # Creating DataFrame for support decision tree model input
 user_df = pd.DataFrame({
-    'age': [age],
+    'age': [decision_tree_age_scaled],
     'gender': [gender_encoded],
     'hormonal_changes': [hormonal_changes_encoded],
     'family_history': [family_history_encoded],
@@ -134,12 +148,14 @@ user_df = pd.DataFrame({
     'alcohol_consumption': [alcohol_consumption_encoded],
     'medical_conditions': [medical_condition_encoded],
     'medications': [medications_encoded],
-    'prior_fractures': [prior_fracture_encoded],  # Ensure this matches what was used during training
+    'prior_fractures': [prior_fracture_encoded],
 })
 
-model = joblib.load(open("decision_tree_model.pkl", "rb"))
+model = joblib.load(open("models/decision_tree_model.pkl", "rb"))
 
 if st.button("Predict Osteoporosis Risk using Decision Tree Model"):
+    proba = model.predict_proba(user_df)
+    st.write(f"### Osteoporosis Risk Probability: {proba[0][1]:.2f}")
     prediction = model.predict(user_df)
     risk = "positive" if prediction == 1 else "negative"
     st.write(f"### We predict {risk} risk of osteoporosis.")
