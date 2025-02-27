@@ -1,3 +1,3 @@
 # Osteoporosis Risk
 
-Coming Soon!
+Winter 2025 Beginner Projects Cycle | AI Student Collective @ UC Davis
