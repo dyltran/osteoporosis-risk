@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import os
 from sklearn.preprocessing import StandardScaler
 
 st.title("Welcome to our Osteoporosis Risk Predictor")
@@ -17,13 +18,18 @@ age = st.slider("Choose your age.", 0, 150, 1)
 if age:
     st.write(f"You are {age} years old.")
 
-logistic_regression_scaler = joblib.load('scalers/logistic_regression_scaler.pkl')
+base_dir = os.path.dirname(os.path.abspath(__file__))
+
+curr_path = os.path.join(base_dir, "scalers", "logistic_regression_scaler.pkl")
+logistic_regression_scaler = joblib.load(curr_path)
 logistic_regression_age_scaled = logistic_regression_scaler.transform([[age]])
 
-support_vector_machine_scaler = joblib.load('scalers/support_vector_machine_scaler.pkl')
+curr_path = os.path.join(base_dir, "scalers", "support_vector_machine_scaler.pkl")
+support_vector_machine_scaler = joblib.load(curr_path)
 support_vector_machine_age_scaled = support_vector_machine_scaler.transform([[age]])
 
-decision_tree_scaler = joblib.load('scalers/decision_tree_scaler.pkl')
+curr_path = os.path.join(base_dir, "scalers", "decision_tree_scaler.pkl")
+decision_tree_scaler = joblib.load(curr_path)
 decision_tree_age_scaled = decision_tree_scaler.transform([[age]])
 
 # Gender Input
@@ -99,11 +105,10 @@ user_df = pd.DataFrame({
 })
 
 # Load Model
-model = joblib.load(open("models/logistic_regression_model.pkl", "rb"))
+curr_path = os.path.join(base_dir, "models", "logistic_regression_model.pkl")
+model = joblib.load(open(curr_path, "rb"))
 
 if st.button("Predict Osteoporosis Risk using Logistic Regression Model"):
-    proba = model.predict_proba(user_df)
-    st.write(f"### Osteoporosis Risk Probability: {proba[0][1]:.2f}")
     prediction = model.predict(user_df)
     risk = "positive" if prediction == 1 else "negative"
     st.write(f"### We predict {risk} risk of osteoporosis.")
@@ -126,7 +131,8 @@ user_df = pd.DataFrame({
     'prior_Fractures': [prior_fracture_encoded],
 })
 
-model = joblib.load(open("models/support_vector_machine_model.pkl", "rb"))
+curr_path = os.path.join(base_dir, "models", "support_vector_machine_model.pkl")
+model = joblib.load(open(curr_path, "rb"))
 
 if st.button("Predict Osteoporosis Risk using Support Vector Machine Model"):
     prediction = model.predict(user_df)
@@ -151,11 +157,10 @@ user_df = pd.DataFrame({
     'prior_fractures': [prior_fracture_encoded],
 })
 
-model = joblib.load(open("models/decision_tree_model.pkl", "rb"))
+curr_path = os.path.join(base_dir, "models", "decision_tree_model.pkl")
+model = joblib.load(open(curr_path, "rb"))
 
 if st.button("Predict Osteoporosis Risk using Decision Tree Model"):
-    proba = model.predict_proba(user_df)
-    st.write(f"### Osteoporosis Risk Probability: {proba[0][1]:.2f}")
     prediction = model.predict(user_df)
     risk = "positive" if prediction == 1 else "negative"
     st.write(f"### We predict {risk} risk of osteoporosis.")
